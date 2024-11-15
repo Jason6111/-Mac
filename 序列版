@@ -1,0 +1,53 @@
+on findLastTargetIndex(targetItem, itemList)
+	set lastIndex to 0
+	repeat with i from (count of itemList) to 1 by -1
+		if item i of itemList is targetItem then
+			set lastIndex to i
+			exit repeat
+		end if
+	end repeat
+	return lastIndex
+end findLastTargetIndex
+
+beep 1
+beep 1
+
+tell application "System Settings"
+	activate
+	delay 1
+	tell application "System Events"
+		tell process "System Settings"
+			click menu item "显示器" of menu "显示" of menu bar item "显示" of menu bar 1
+			delay 0.3
+			tell group 1 of group 2 of splitter group 1 of group 1 of window "显示器"
+				try
+						click pop up button 1			
+						delay 0.6					
+						if (menu item "连接键盘和鼠标至" of menu 1 of pop up button 1) exists then	
+             #ipad亮屏时的序列从加号开始算
+							click menu item 9 of menu 1 of pop up button 1						
+						else				
+             #ipad熄屏时的序列从加号开始算
+							click menu item 5 of menu 1 of pop up button 1							
+						end if						
+						say "iPad 连接中"						
+						set counter to 1						
+					on error
+					delay 0.5
+					say "未找到"
+				end try
+			end tell
+		end tell
+	end tell
+end tell
+delay 1
+beep 1
+
+tell application "System Events"
+	tell process "System Settings"
+		try
+			-- 模拟按下 Command-q 来关闭窗口
+			keystroke "q" using command down
+		end try
+	end tell
+end tell
