@@ -1,0 +1,53 @@
+on findLastTargetIndex(targetItem, itemList)
+	set lastIndex to 0
+	repeat with i from (count of itemList) to 1 by -1
+		if item i of itemList is targetItem then
+			set lastIndex to i
+			exit repeat
+		end if
+	end repeat
+	return lastIndex
+end findLastTargetIndex
+
+beep 1
+beep 1
+
+tell application "System Settings"
+	activate
+	delay 1
+	tell application "System Events"
+		tell process "System Settings"
+			click menu item "显示器" of menu "显示" of menu bar item "显示" of menu bar 1
+			delay 0.3
+			tell group 1 of group 2 of splitter group 1 of group 1 of window "显示器"
+				try
+					delay 1
+					-- 这里需要延迟，因为系统设置冷启动后不能立刻加载出右侧的界面
+					click pop up button "添加"
+					-- 获取所有菜单项的名称
+					set menuItems to name of menu items of menu "添加" of pop up button "添加"
+					-- 通过名字查找要准确一些，这里去找最后一个名字的索引，因为如果符合通用控制的调节，就会出现两个名字，一个是通用控制，一个是随航
+					set targetIndex to (my findLastTargetIndex(“艾派德”, menuItems))
+					-- 点击目标菜单项
+					delay 0.3
+					click menu item targetIndex of menu "添加" of pop up button "添加"
+					say "随航已连接"
+				on error
+					delay 0.5
+					say "未找到"
+				end try
+			end tell
+		end tell
+	end tell
+end tell
+delay 1
+beep 1
+
+tell application "System Events"
+	tell process "System Settings"
+		try
+			-- 模拟按下 Command-q 来关闭窗口
+			keystroke "q" using command down
+		end try
+	end tell
+end tell
